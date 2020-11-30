@@ -45,11 +45,11 @@ export class AuthService {
     const user = await this.usersService.loginUser(loginUserDto);
 
     // generate and sign token
-    const token = this._createToken({ id: user.id });
+    const accessToken = this._createToken({ id: user.id });
 
     return {
-      username: user.username,
-      ...token,
+      user,
+      accessToken,
     };
   }
 
@@ -63,12 +63,8 @@ export class AuthService {
   }
 
   private _createToken(user: any) {
-    const expiresIn = process.env.EXPIRES_IN;
     const accessToken = this.jwtService.sign(user);
 
-    return {
-      expiresIn,
-      accessToken,
-    };
+    return accessToken;
   }
 }

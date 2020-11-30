@@ -51,7 +51,7 @@ export class UserService {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
 
-    return userFound;
+    return this._sanitizeUser(userFound);
   }
 
   // async findOne2(username: string): Promise<User | undefined> {

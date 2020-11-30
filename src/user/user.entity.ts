@@ -7,21 +7,21 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-@Entity()
+@Entity('users')
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 200 })
   firstname: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 200 })
   lastname: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', length: 200, unique: true })
   username: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', length: 200, unique: true })
   email: string;
 
   @Column()
