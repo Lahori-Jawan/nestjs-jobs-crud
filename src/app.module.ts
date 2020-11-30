@@ -5,9 +5,17 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+// import { JobModule } from './job/job.module';
+import { JobsModule } from './jobs/jobs.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, AuthModule, UserModule],
+  imports: [
+    ConfigModule.forRoot(),
+    DatabaseModule,
+    AuthModule,
+    UserModule,
+    JobsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
