@@ -5,10 +5,6 @@ import { Job } from './job.entity';
 
 @Injectable()
 export class JobsService {
-  // constructor(
-  //   @InjectRepository(User)
-  //   private usersRepository: Repository<User>,
-  // ) {}
   constructor(@InjectRepository(Job) private jobsRepository: Repository<Job>) {}
 
   async create() {
