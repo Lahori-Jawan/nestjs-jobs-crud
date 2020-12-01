@@ -9,7 +9,6 @@ import {
   BaseEntity,
 } from 'typeorm';
 import { Status } from './enums';
-import { IPoint } from './interface';
 
 @Entity('jobs')
 export class Job {

@@ -1,19 +1,19 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsOptional } from 'class-validator';
 import { Status } from '../enums';
 
-export class CreateJobDto {
-  @IsNotEmpty()
+export class UpdateJobDto {
+  @IsOptional()
   title: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   companyname: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   description: string;
 
   @IsOptional()
   status: Status;
 
-  @IsNotEmpty()
+  @IsOptional()
   location: string;
 }
