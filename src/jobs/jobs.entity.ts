@@ -12,7 +12,7 @@ import { Status } from './enums';
 import { IPoint } from './interface';
 
 @Entity('jobs')
-export class Job extends BaseEntity {
+export class Job {
   @PrimaryGeneratedColumn()
   @Index()
   id: number;
@@ -37,11 +37,6 @@ export class Job extends BaseEntity {
   @Index({ spatial: true })
   @Column({
     type: 'point',
-    // transformer: {
-    //   from: p => p, // comes from database in format we need already,
-    //   to: p => convertStringToPoint(p) // serialize "123, 456" -> { x: 123, y: 456 }
-    // to: p => `${p.x},${p.y}`, // { x: 1, y: 2 } -> '1,2'
-    // }
   })
   location: string;
 

@@ -10,7 +10,6 @@ export class CreateJobDto {
   @IsNotEmpty()
   description: string;
 
-  @IsNotEmpty()
   status: string;
 
   @IsNotEmpty()
