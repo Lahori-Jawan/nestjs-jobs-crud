@@ -12,8 +12,7 @@
     "baseUrl": "./",
     "incremental": true,
     "paths": {
-      "@todo/*": ["src/todo/*"],
-      "@shared/*": ["src/shared/*"],
+      "@src/*": ["src/*"],
       "@user/*": ["src/user/*"]
     }
   }

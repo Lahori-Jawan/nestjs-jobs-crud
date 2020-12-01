@@ -1,24 +1,25 @@
 import {
-  Controller,
   Body,
   Get,
+  Put,
   Post,
-  BadRequestException,
+  Delete,
   Param,
   Query,
-  Delete,
-  Put,
+  Controller,
+  BadRequestException,
 } from '@nestjs/common';
+import { isLatLong } from 'class-validator';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/job.create-dto';
 import { UpdateJobDto } from './dto/job.update-dto';
 import { FilterJobDto } from './dto/job.filter-dto';
-import { isLatLong } from 'class-validator';
+import { Public } from '../public.decorator';
 
 @Controller('jobs')
 export class JobsController {
   constructor(private jobsService: JobsService) {}
-
+  @Public()
   @Get()
   async getAllJobs(@Query() filter: FilterJobDto) {
     return await this.jobsService.getAll(filter);
@@ -63,10 +64,13 @@ export class JobsController {
       affected == 0
         ? 'Nothing updated'
         : `Updated ${affected} record ${affected > 1 ? 's' : ''}`;
-    console.log({ message, affected });
+
     return {
       message,
       updatedJob: !affected ? null : updatedJob,
     };
   }
+
+  @Get('location')
+  async getJobsInLocation() {}
 }

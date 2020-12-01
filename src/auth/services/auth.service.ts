@@ -7,7 +7,6 @@ import {
 import { CreateUserDto } from '@user/dto/user.create-dto';
 import { UserService } from '@user/user.service';
 import { LoginUserDto } from '@user/dto/user.login-dto';
-import { UserDto } from '@user/dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -25,9 +24,8 @@ export class AuthService {
     };
 
     try {
-      const newU = await this.usersService.create(user);
-      status.user = newU;
-      console.log({ newU });
+      const newUser = await this.usersService.create(user);
+      status.user = newUser;
     } catch (err) {
       status = {
         success: false,
@@ -40,12 +38,9 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDto) {
-    // find user in db
-    console.log({ loginUserDto });
     const user = await this.usersService.loginUser(loginUserDto);
 
-    // generate and sign token
-    const accessToken = this._createToken({ id: user.id });
+    const accessToken = this._createToken({ id: user.id, email: user.email });
 
     return {
       user,
@@ -55,16 +50,13 @@ export class AuthService {
 
   async validateUser(email: string) {
     const user = await this.usersService.findOne({ email });
-    if (!user) {
-      // throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
-      throw new UnauthorizedException();
-    }
+
+    if (!user) throw new UnauthorizedException();
+
     return user;
   }
 
   private _createToken(user: any) {
-    const accessToken = this.jwtService.sign(user);
-
-    return accessToken;
+    return this.jwtService.sign(user);
   }
 }

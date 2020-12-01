@@ -45,7 +45,6 @@ export class UserService {
       user.password,
       userFound.password,
     );
-    console.log({ userFound, user, isUserMatched });
 
     if (!isUserMatched) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
@@ -54,17 +53,13 @@ export class UserService {
     return this._sanitizeUser(userFound);
   }
 
-  // async findOne2(username: string): Promise<User | undefined> {
-  //   return this.usersRepository.findOne() (user => user.username === username);
-  // }
-
   async deleteOne(id: number): Promise<void> {
     await this.usersRepository.delete({ id });
   }
 
-  async updateOne(id: number, user: User) {
-    return;
-  }
+  // async updateOne(id: number, user: User) {
+  //   return;
+  // }
 
   private _sanitizeUser(user: User) {
     delete user.password;
