@@ -5,12 +5,14 @@ import {
   Post,
   BadRequestException,
   Param,
+  Query,
   Delete,
   Put,
 } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/job.create-dto';
 import { UpdateJobDto } from './dto/job.update-dto';
+import { FilterJobDto } from './dto/job.filter-dto';
 import { isLatLong } from 'class-validator';
 
 @Controller('jobs')
@@ -18,8 +20,8 @@ export class JobsController {
   constructor(private jobsService: JobsService) {}
 
   @Get()
-  async getAllJobs() {
-    return await this.jobsService.getAll();
+  async getAllJobs(@Query() filter: FilterJobDto) {
+    return await this.jobsService.getAll(filter);
   }
 
   @Get(':id')

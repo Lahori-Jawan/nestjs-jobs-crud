@@ -10,14 +10,15 @@ import { Repository } from 'typeorm';
 import { Job } from './jobs.entity';
 import { CreateJobDto } from './dto/job.create-dto';
 import { UpdateJobDto } from './dto/job.update-dto';
+import { FilterJobDto } from './dto/job.filter-dto';
 
 @Injectable()
 export class JobsService {
   constructor(@InjectRepository(Job) private jobsRepository: Repository<Job>) {}
 
-  async getAll() {
+  async getAll(filter: FilterJobDto) {
     //* Should have pagination for better performance
-    return await this.jobsRepository.find();
+    return await this.jobsRepository.find({ where: { ...filter } });
   }
 
   async create(job: CreateJobDto) {
