@@ -6,6 +6,7 @@ import {
   ManyToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Job } from '@src/jobs/jobs.entity';
@@ -21,10 +22,12 @@ export class User {
   @Column({ type: 'varchar', length: 200 })
   lastname: string;
 
+  @Index({ unique: true })
   @Column({ type: 'varchar', length: 200, unique: true })
   username: string;
 
-  @Column({ type: 'varchar', length: 200, unique: true })
+  @Index({ unique: true })
+  @Column({ type: 'varchar', length: 200 })
   email: string;
 
   @Column()
@@ -45,15 +48,8 @@ export class User {
   }
 
   @BeforeInsert()
-  async emailToLowerCase() {
-    let pwd = this.password;
-    const salt = bcrypt.genSalt(10);
+  async essentialDataSetup() {
     this.email = this.email.toLowerCase();
     this.password = await bcrypt.hash(this.password, 10);
-    console.log(
-      'password',
-      this.password,
-      `result ${bcrypt.compareSync(pwd, this.password)}`,
-    );
   }
 }
