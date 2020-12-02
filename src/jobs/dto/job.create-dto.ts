@@ -14,6 +14,6 @@ export class CreateJobDto {
   @IsOptional()
   status: Status;
 
-  @IsNotEmpty()
-  location: string;
+  // @IsNotEmpty()
+  // location: string;
 }

@@ -2,13 +2,16 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  BaseEntity,
   BeforeInsert,
+  ManyToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Job } from '@src/jobs/jobs.entity';
 
 @Entity('users')
-export class User extends BaseEntity {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -26,6 +29,20 @@ export class User extends BaseEntity {
 
   @Column()
   password: string;
+
+  @ManyToMany((type) => Job, (job) => job.applications)
+  jobs: Job[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  toJSON() {
+    delete this.password;
+    return this;
+  }
 
   @BeforeInsert()
   async emailToLowerCase() {

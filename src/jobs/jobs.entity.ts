@@ -1,3 +1,4 @@
+import { User } from '@src/user/user.entity';
 import {
   Entity,
   Column,
@@ -5,8 +6,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  BeforeInsert,
-  BaseEntity,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Status } from './enums';
 
@@ -33,11 +34,13 @@ export class Job {
   })
   status: string;
 
-  @Index({ spatial: true })
-  @Column({
-    type: 'point',
+  @ManyToMany((type) => User, (user) => user.jobs, { cascade: true })
+  @JoinTable({
+    name: 'job-applications',
+    joinColumn: { referencedColumnName: 'id', name: 'job_id' },
+    inverseJoinColumn: { referencedColumnName: 'id', name: 'user_id' },
   })
-  location: string;
+  applications: User[];
 
   @CreateDateColumn()
   createdAt: Date;

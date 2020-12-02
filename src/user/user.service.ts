@@ -22,7 +22,7 @@ export class UserService {
     } catch (error) {
       throw new Error(error.message);
     }
-    return this._sanitizeUser(newUser);
+    return newUser;
   }
 
   findAll(): Promise<User[]> {

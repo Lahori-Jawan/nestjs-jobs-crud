@@ -8,6 +8,7 @@ import {
   Query,
   Controller,
   BadRequestException,
+  Req,
 } from '@nestjs/common';
 import { isLatLong } from 'class-validator';
 import { JobsService } from './jobs.service';
@@ -33,10 +34,10 @@ export class JobsController {
   @Post()
   async createJob(@Body() job: CreateJobDto) {
     console.log({ job });
-    const validLocation = isLatLong(job.location);
+    // const validLocation = isLatLong(job.location);
 
-    if (!validLocation)
-      throw new BadRequestException('Please provide correct location.');
+    // if (!validLocation)
+    //   throw new BadRequestException('Please provide correct location.');
 
     return await this.jobsService.create(job);
   }
@@ -73,4 +74,9 @@ export class JobsController {
 
   @Get('location')
   async getJobsInLocation() {}
+
+  @Post('apply')
+  async applyToJob(@Body() job: any, @Req() req: any) {
+    return await this.jobsService.jobApplication(job.jobId, req.user);
+  }
 }
