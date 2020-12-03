@@ -23,19 +23,22 @@ export class JobsService {
       relations: ['applications'],
     });
   }
-
+  // locations: 31.585323, 74.473126, 31.584369, 74.473148, 31.583208, 74.472473, 31.583235, 74.474002, 31.580580, 74.473417
+  // 31.587270, 74.472296, 31.588047, 74.471363
   async create(job: CreateJobDto) {
-    const newJob = new Job();
-    // Object.assign(newJob, { ...job, location: `(${job.location})` });
-    Object.assign(newJob, job);
+    const [x, y] = job.location.split(',');
+    const location = `point(${x} ${y})`;
 
     try {
-      await this.jobsRepository.save(newJob);
+      // await this.jobsRepository.save(newJob); // not properly saving location
+      this.jobsRepository
+        .query(`INSERT INTO jobs("title", "companyname", "description", "status", "location")
+      VALUES('${job.title}', '${job.companyname}','${job.description}', '${job.status}', '${location}')`);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
 
-    return newJob;
+    return job;
   }
 
   async getOne(id: number) {
@@ -73,14 +76,27 @@ export class JobsService {
   }
 
   async jobApplication(id: number, user: any) {
-    const job = await this.jobsRepository.findOne(id);
+    const job = await this.jobsRepository.findOne({
+      where: { id },
+      relations: ['applications'],
+    });
 
     if (!job) throw new NotFoundException('This job is not available');
 
-    // job.applications.push(user);  // BUG, not working
-    job.applications = [user]; // this way new record overwrites old one
+    job.applications.push(user);
     await this.jobsRepository.save(job);
 
     return job;
+  }
+
+  async nearByJobs(
+    column: string = 'title',
+    value: any = 'A job title 13',
+    radius: number = 500, // unit in meters
+  ) {
+    console.log({ column, value });
+    return await this.jobsRepository.query(
+      `select *, ST_DISTANCE(d.location::geography, ref.location::geography) as distance from jobs d, lateral( select id, location from jobs where ${column}='${value}' ) as ref where d.id <> ref.id and ST_DISTANCE(d.location::geography, ref.location::geography) < ${radius}  order by distance`,
+    );
   }
 }

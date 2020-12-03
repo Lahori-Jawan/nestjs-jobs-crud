@@ -20,10 +20,22 @@ import { Public } from '../public.decorator';
 @Controller('jobs')
 export class JobsController {
   constructor(private jobsService: JobsService) {}
-  @Public()
+
   @Get()
   async getAllJobs(@Query() filter: FilterJobDto) {
     return await this.jobsService.getAll(filter);
+  }
+
+  @Get('bylocation')
+  async getJobsByLocation(@Body() body: any) {
+    const column = 'title' in body ? 'title' : 'location';
+    const value =
+      column === 'title'
+        ? body.title
+        : `point(${body.location.split(',')[0]} ${
+            body.location.split(',')[1]
+          })`;
+    return await this.jobsService.nearByJobs(column, value, body.radius);
   }
 
   @Get(':id')
@@ -33,11 +45,10 @@ export class JobsController {
 
   @Post()
   async createJob(@Body() job: CreateJobDto) {
-    console.log({ job });
-    // const validLocation = isLatLong(job.location);
+    const validLocation = isLatLong(job.location);
 
-    // if (!validLocation)
-    //   throw new BadRequestException('Please provide correct location.');
+    if (!validLocation)
+      throw new BadRequestException('Please provide correct location.');
 
     return await this.jobsService.create(job);
   }
@@ -71,9 +82,6 @@ export class JobsController {
       updatedJob: !affected ? null : updatedJob,
     };
   }
-
-  @Get('location')
-  async getJobsInLocation() {}
 
   @Post('apply')
   async applyToJob(@Body() job: any, @Req() req: any) {

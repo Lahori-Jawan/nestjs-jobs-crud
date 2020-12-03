@@ -34,6 +34,15 @@ export class Job {
   })
   status: string;
 
+  @Column({ type: 'geometry', spatialFeatureType: 'point' })
+  location: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
   @ManyToMany((type) => User, (user) => user.jobs, { cascade: true })
   @JoinTable({
     name: 'job-applications',
@@ -41,10 +50,4 @@ export class Job {
     inverseJoinColumn: { referencedColumnName: 'id', name: 'user_id' },
   })
   applications: User[];
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }
