@@ -1,6 +1,9 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 
+@ApiTags('User')
+@ApiBearerAuth('token')
 @Controller('users')
 export class UserController {
   constructor(private user: UserService) {}
@@ -9,13 +12,4 @@ export class UserController {
   public async getUsers() {
     return await this.user.findAll();
   }
-
-  // @Post()
-  // public async addUser(
-  //   @Body('first') fname: string,
-  //   @Body('last') lname: string,
-  //   @Body('active') isActive: boolean,
-  // ) {
-  //   return await this.user.add(fname, lname, isActive);
-  // }
 }

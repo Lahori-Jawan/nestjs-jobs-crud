@@ -69,9 +69,10 @@ export class JobsService {
       affected = null;
 
     try {
-      ({ affected } = await this.jobsRepository.update({ id }, job));
+      ({ affected } = await this.jobsRepository.update(id, job));
       updatedJob = await this.jobsRepository.findOne({ id });
     } catch (error) {
+      console.log(error.message);
       throw new HttpException(
         'Something went wrong. Please try again later.',
         HttpStatus.INTERNAL_SERVER_ERROR,

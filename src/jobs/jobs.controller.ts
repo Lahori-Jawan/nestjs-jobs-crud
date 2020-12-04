@@ -15,8 +15,12 @@ import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/job.create-dto';
 import { UpdateJobDto } from './dto/job.update-dto';
 import { FilterJobDto } from './dto/job.filter-dto';
-import { Public } from '../public.decorator';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApplyJobDto } from './dto/job.apply-dto';
+import { NearbyJobsDTO } from './dto/job.byLocation-dto';
 
+@ApiTags('Jobs')
+@ApiBearerAuth('token')
 @Controller('jobs')
 export class JobsController {
   constructor(private jobsService: JobsService) {}
@@ -27,7 +31,8 @@ export class JobsController {
   }
 
   @Get('bylocation')
-  async getJobsByLocation(@Body() body: any) {
+  @ApiBody({ type: NearbyJobsDTO })
+  async getJobsByLocation(@Body() body: NearbyJobsDTO) {
     const column = 'title' in body ? 'title' : 'location';
     const value =
       column === 'title'
@@ -84,7 +89,7 @@ export class JobsController {
   }
 
   @Post('apply')
-  async applyToJob(@Body() job: any, @Req() req: any) {
+  async applyToJob(@Body() job: ApplyJobDto, @Req() req: any) {
     return await this.jobsService.jobApplication(job.jobId, req.user);
   }
 }
