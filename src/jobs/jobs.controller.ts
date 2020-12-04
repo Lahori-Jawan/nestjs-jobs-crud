@@ -90,6 +90,7 @@ export class JobsController {
 
   @Post('apply')
   async applyToJob(@Body() job: ApplyJobDto, @Req() req: any) {
+
     return await this.jobsService.jobApplication(job.jobId, req.user);
   }
 }

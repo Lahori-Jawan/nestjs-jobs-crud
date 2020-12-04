@@ -63,6 +63,7 @@ export class Job {
       "A cartesian coordinate system based geolocation points representing company's location.",
     required: true,
   })
+
   @Column({ type: 'geometry', spatialFeatureType: 'point' })
   location: string;
 

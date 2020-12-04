@@ -32,6 +32,7 @@ export class CreateJobDto {
     description:
       'It indicates whether job is <code>listed</code>, <code>unlisted</code> or <code>saved</code> with default value as <code>unlisted</code>.',
   })
+
   @IsDefined()
   @IsNotEmpty()
   status: string;
