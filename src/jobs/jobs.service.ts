@@ -13,6 +13,7 @@ import { UpdateJobDto } from './dto/job.update-dto';
 import { FilterJobDto } from './dto/job.filter-dto';
 
 const validStatus = ['listed', 'unlisted', 'saved'];
+
 @Injectable()
 export class JobsService {
   constructor(@InjectRepository(Job) private jobsRepository: Repository<Job>) {}
@@ -95,13 +96,12 @@ export class JobsService {
   }
 
   async nearByJobs(
-    column: string = 'title',
-    value: any = 'A job title 13',
+    column: string,
+    value: any,
     radius: number = 500, // unit in meters
   ) {
-    console.log({ column, value });
     return await this.jobsRepository.query(
-      `select *, ST_DISTANCE(d.location::geography, ref.location::geography) as distance from jobs d, lateral( select id, location from jobs where ${column}='${value}' ) as ref where d.id <> ref.id and ST_DISTANCE(d.location::geography, ref.location::geography) < ${radius}  order by distance`,
+      `SELECT *, ST_DISTANCE(d.location::geography, ref.location::geography) as distance from jobs d, lateral( SELECT id, location from jobs where ${column}='${value}' ) as ref where d.id <> ref.id and ST_DISTANCE(d.location::geography, ref.location::geography) < ${radius}  order by distance`,
     );
   }
 }
