@@ -12,33 +12,38 @@ import { CreateJobDto } from './dto/job.create-dto';
 import { UpdateJobDto } from './dto/job.update-dto';
 import { FilterJobDto } from './dto/job.filter-dto';
 
+const validStatus = ['listed', 'unlisted', 'saved'];
 @Injectable()
 export class JobsService {
   constructor(@InjectRepository(Job) private jobsRepository: Repository<Job>) {}
 
   async getAll(filter: FilterJobDto) {
-    //* Should have pagination for better performance
+    // Should have pagination for better performance
     return await this.jobsRepository.find({
       where: { ...filter },
       relations: ['applications'],
     });
   }
-  // locations: 31.585323, 74.473126, 31.584369, 74.473148, 31.583208, 74.472473, 31.583235, 74.474002, 31.580580, 74.473417
-  // 31.587270, 74.472296, 31.588047, 74.471363
+  // locations: (31.585323, 74.473126), (31.584369, 74.473148), (31.583208, 74.472473), (31.583235, 74.474002), (31.580580, 74.473417)
+  // (31.587270, 74.472296), (31.588047, 74.471363)
   async create(job: CreateJobDto) {
     const [x, y] = job.location.split(',');
     const location = `point(${x} ${y})`;
+    let newJob = null;
+
+    job.status = validStatus.includes(job.status) ? job.status : 'unlisted';
 
     try {
-      // await this.jobsRepository.save(newJob); // not properly saving location
-      this.jobsRepository
+      // await this.jobsRepository.save(newJob); // not saving location accurately
+      newJob = await this.jobsRepository
         .query(`INSERT INTO jobs("title", "companyname", "description", "status", "location")
-      VALUES('${job.title}', '${job.companyname}','${job.description}', '${job.status}', '${location}')`);
+      VALUES('${job.title}', '${job.companyname}','${job.description}', '${job.status}', '${location}')
+      RETURNING *`);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
 
-    return job;
+    return newJob;
   }
 
   async getOne(id: number) {
