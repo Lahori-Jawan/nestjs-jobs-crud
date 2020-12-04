@@ -2,11 +2,9 @@ version: '3'
 
 services:
   postgres:
-    image: postgres:11.9
+    image: postgis/postgis
     container_name: postgres
     env_file: .env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
 
@@ -20,11 +18,5 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
-    volumes:
-      - pgadmin:/root/.pgadmin
     ports:
       - '5050:80'
-
-volumes:
-  postgres_data:
-  pgadmin:
