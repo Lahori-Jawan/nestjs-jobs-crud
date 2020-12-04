@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
-import { Status } from '../enums';
+import { IsDefined, IsNotEmpty } from 'class-validator';
+
+const status = ['listed', 'unlisted', 'saved'];
 
 export class CreateJobDto {
   @IsNotEmpty()
@@ -13,8 +14,9 @@ export class CreateJobDto {
   @IsNotEmpty()
   description: string;
 
+  @IsDefined()
   @IsNotEmpty()
-  status: Status;
+  status: string;
 
   @IsNotEmpty()
   location: string;
